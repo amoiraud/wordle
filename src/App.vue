@@ -1,14 +1,16 @@
 <template>
-  <div class="header">
-    <div class="title-container">
-      Wordle
+  <v-app>
+    <div class="header">
+      <div class="title-container">
+        Wordle
+      </div>
     </div>
-  </div>
-  <div class="main-wrapper">
-    <div class="main-container">
-      <RouterView />
+    <div class="main-wrapper">
+      <div class="main-container">
+        <RouterView />
+      </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script setup lang="ts">
