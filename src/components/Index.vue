@@ -1,12 +1,7 @@
 <template>
   <div class="index-container">
     <div class="words-container">
-      <word-template :actualStep="actualStep" :step="1" :letters="lettersByStep[0]" :lettersClass="lettersClassByStep[0]"></word-template>
-      <word-template :actualStep="actualStep" :step="2" :letters="lettersByStep[1]" :lettersClass="lettersClassByStep[1]"></word-template>
-      <word-template :actualStep="actualStep" :step="3" :letters="lettersByStep[2]" :lettersClass="lettersClassByStep[2]"></word-template>
-      <word-template :actualStep="actualStep" :step="4" :letters="lettersByStep[3]" :lettersClass="lettersClassByStep[3]"></word-template>
-      <word-template :actualStep="actualStep" :step="5" :letters="lettersByStep[4]" :lettersClass="lettersClassByStep[4]"></word-template>
-      <word-template :actualStep="actualStep" :step="6" :letters="lettersByStep[5]" :lettersClass="lettersClassByStep[5]"></word-template>
+      <word-template v-for="(step, key) in lettersByStep" :actualStep="actualStep" :step="key + 1" :letters="lettersByStep[key]" :lettersClass="lettersClassByStep[key]"></word-template>
     </div>
     <div class="result-container" v-if="showResult">
       <span v-if="hasWin" class="win">
@@ -34,59 +29,54 @@ export default {
     return {
       rotated: false,
       word: '',
-      actualStep: 1,
-      lettersByStep: [[],[],[],[],[],[]],
-      lettersClassByStep: [
-        ['', '', '', '', ''],
-        ['', '', '', '', ''],
-        ['', '', '', '', ''],
-        ['', '', '', '', ''],
-        ['', '', '', '', ''],
-        ['', '', '', '', ''],
-      ],
+      actualStep: 0,
+      lettersByStep: [],
+      lettersClassByStep: [],
       lettersList: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'],
       hasWin: false,
       showResult: false,
+      nbLetters: 5,
+      nbSteps: 6,
     };
   },
   methods: {
     validWord() {
       const goodLetters = this.word.split('');
       let nbGoods = 0;
-      for (let i = 0; i < this.lettersByStep[this.actualStep - 1].length; i++) {
-        if (this.lettersByStep[this.actualStep - 1][i] === goodLetters[i]) {
+      for (let i = 0; i < this.lettersByStep[this.actualStep].length; i++) {
+        if (this.lettersByStep[this.actualStep][i] === goodLetters[i]) {
           // Bon lettre au bon emplacement
           nbGoods++;
-          this.lettersClassByStep[this.actualStep - 1][i] = 'good rotated';
-        } else if (goodLetters.indexOf(this.lettersByStep[this.actualStep - 1][i]) !== -1) {
+          this.lettersClassByStep[this.actualStep][i] = 'good rotated';
+        } else if (goodLetters.indexOf(this.lettersByStep[this.actualStep][i]) !== -1) {
           // Bonne lette, mauvais emplacement
-          if (this.lettersByStep[this.actualStep - 1][goodLetters.indexOf(this.lettersByStep[this.actualStep - 1][i])] !== this.lettersByStep[this.actualStep - 1][i]) {
-            this.lettersClassByStep[this.actualStep - 1][i] = 'semigood rotated';
-          } else if (this.nbOccurences(this.lettersByStep[this.actualStep - 1][i]) > 1) {
+          if (this.lettersByStep[this.actualStep][goodLetters.indexOf(this.lettersByStep[this.actualStep][i])] !== this.lettersByStep[this.actualStep][i]) {
+            this.lettersClassByStep[this.actualStep][i] = 'semigood rotated';
+          } else if (this.nbOccurences(this.lettersByStep[this.actualStep][i]) > 1) {
             // Si on a plusieurs occurences de la meme lettre, on met en semi good le nombre d'occurences correspondant
             let alreadyPut = 0;
             for (let j = 0; j < i; j++) {
-              if (this.lettersByStep[this.actualStep - 1][j] === this.lettersByStep[this.actualStep - 1][i]) {
+              if (this.lettersByStep[this.actualStep][j] === this.lettersByStep[this.actualStep][i]) {
                 alreadyPut++;
               }
             }
-            if (this.nbOccurences(this.lettersByStep[this.actualStep - 1][i]) > alreadyPut) {
-              this.lettersClassByStep[this.actualStep - 1][i] = 'semigood rotated';
+            if (this.nbOccurences(this.lettersByStep[this.actualStep][i]) > alreadyPut) {
+              this.lettersClassByStep[this.actualStep][i] = 'semigood rotated';
             } else {
-              this.lettersClassByStep[this.actualStep - 1][i] = 'rotated';
+              this.lettersClassByStep[this.actualStep][i] = 'rotated';
             }
           } else {
-            this.lettersClassByStep[this.actualStep - 1][i] = 'rotated';
+            this.lettersClassByStep[this.actualStep][i] = 'rotated';
           }
         } else {
-          this.lettersClassByStep[this.actualStep - 1][i] = 'rotated';
+          this.lettersClassByStep[this.actualStep][i] = 'rotated';
         }
       }
       this.actualStep++;
-      if (nbGoods === 5) {
+      if (nbGoods === this.nbLetters) {
         this.hasWin = true;
         this.showResult = true;
-      } else if (this.actualStep === 7) {
+      } else if (this.actualStep === (this.nbSteps + 1)) {
         this.showResult = true;
       }
     },
@@ -106,6 +96,13 @@ export default {
     },
   },
   created() {
+    for (let i = 0; i < this.nbSteps; i++) {
+      this.lettersByStep.push([]);
+      this.lettersClassByStep.push([]);
+      for (let j = 0; j < this.nbLetters; j++) {
+        this.lettersClassByStep[i].push('');
+      }
+    }
     axios.get('/static/word-list.json').then((result) => {
       const wordsList = result.data;
       const wordNumber = Math.floor(Math.random() * wordsList.length);
@@ -113,12 +110,12 @@ export default {
     });
     document.addEventListener('keyup', (e) => {
       if (!this.hasWin) {
-        if (e.key === 'Enter' && this.lettersByStep[this.actualStep - 1].length === 5) {
+        if (e.key === 'Enter' && this.lettersByStep[this.actualStep].length === this.nbLetters) {
           this.validWord();
         } else if (e.key === 'Backspace') {
-          this.lettersByStep[this.actualStep - 1].pop();
-        } else if (this.lettersByStep[this.actualStep - 1].length < 5 && this.lettersList.indexOf(e.key) !== -1) {
-          this.lettersByStep[this.actualStep - 1].push(e.key);
+          this.lettersByStep[this.actualStep].pop();
+        } else if (this.lettersByStep[this.actualStep].length < this.nbLetters && this.lettersList.indexOf(e.key) !== -1) {
+          this.lettersByStep[this.actualStep].push(e.key);
         }
       }
     });
@@ -135,9 +132,7 @@ export default {
 }
 
 .words-container {
-  width: 315px;
-  margin-left: auto;
-  margin-right: auto;
+  text-align: center;
 }
 
 .result-container {
