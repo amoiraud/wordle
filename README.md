@@ -1,1 +1,2 @@
-https://dev.to/jiprochazka/starting-up-a-new-vue-3-project-with-vite-and-docker-3355
+npm install
+npm run dev
