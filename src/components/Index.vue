@@ -164,5 +164,8 @@ export default {
   background-color: #041D3D;
   color: white;
   font-weight: 700;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>
