@@ -1,9 +1,7 @@
 <template>
   <div class="header">
-    <div class="infolegale-logo">
-      <router-link to="/">
-        <div class="logo"></div>
-      </router-link>
+    <div class="title-container">
+      Wordle
     </div>
   </div>
   <div class="main-wrapper">
@@ -14,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 </script>
 
 <style lang="scss">
@@ -22,6 +20,15 @@ import { RouterLink, RouterView } from 'vue-router'
     height: 70px;
     background-color: #041D3D;
     color: white;
+  }
+
+  .title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 24px;
+    font-weight: 600;
   }
 
   .main-wrapper {
