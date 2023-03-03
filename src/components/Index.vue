@@ -15,6 +15,8 @@
       <span v-else class="lose">
         Dommage, le mot était <strong>{{word}}</strong>
       </span>
+      <br/><br/>
+      <v-btn class="btn-new-game" @click="reload()">Nouvelle partie</v-btn>
     </div>
   </div>
 </template>
@@ -98,7 +100,10 @@ export default {
         }
       }
       return occ;
-    }
+    },
+    reload() {
+      this.$router.go();
+    },
   },
   created() {
     axios.get('/static/word-list.json').then((result) => {
@@ -138,7 +143,7 @@ export default {
 .result-container {
   font-size: 20px;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
 
   .win {
@@ -153,5 +158,11 @@ export default {
       color: black;
     }
   }
+}
+
+.btn-new-game {
+  background-color: #041D3D;
+  color: white;
+  font-weight: 700;
 }
 </style>
