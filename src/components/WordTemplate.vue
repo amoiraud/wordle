@@ -14,9 +14,6 @@ export default {
     };
   },
   props: {
-    word: String,
-    step: Number,
-    actualStep: Number,
     letters: Array,
     lettersClass: Array,
   },
