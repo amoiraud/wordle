@@ -45,7 +45,7 @@ export default {
       let nbGoods = 0;
       for (let i = 0; i < this.lettersByStep[this.actualStep].length; i++) {
         if (this.lettersByStep[this.actualStep][i] === goodLetters[i]) {
-          // Bon lettre au bon emplacement
+          // Bonne lettre au bon emplacement
           nbGoods++;
           this.lettersClassByStep[this.actualStep][i] = 'good rotated';
         } else if (goodLetters.indexOf(this.lettersByStep[this.actualStep][i]) !== -1) {
@@ -76,7 +76,7 @@ export default {
       if (nbGoods === this.nbLetters) {
         this.hasWin = true;
         this.showResult = true;
-      } else if (this.actualStep === (this.nbSteps + 1)) {
+      } else if (this.actualStep === this.nbSteps) {
         this.showResult = true;
       }
     },
