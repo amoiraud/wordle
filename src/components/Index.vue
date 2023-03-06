@@ -1,7 +1,7 @@
 <template>
   <div class="index-container">
     <div class="words-container">
-      <word-template v-for="(step, key) in lettersByStep" :actualStep="actualStep" :step="key + 1" :letters="lettersByStep[key]" :lettersClass="lettersClassByStep[key]"></word-template>
+      <word-template v-for="(step, key) in lettersByStep" :letters="lettersByStep[key]" :lettersClass="lettersClassByStep[key]"></word-template>
     </div>
     <div class="result-container" v-if="showResult">
       <span v-if="hasWin" class="win">
